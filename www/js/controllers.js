@@ -1,37 +1,40 @@
 angular.module('MapController', ['ngCordova'])
-    .controller('MapController', function($scope, $state,$cordovaGeolocation,$ionicLoading,$ionicPlatform){
+    .controller('MapController', function($scope){
+      var ctrl = this;
 
-     $ionicPlatform.ready(function() {    
- 
-        
-         
-        var posOptions = {
-            enableHighAccuracy: true,
-            timeout: 20000,
-            maximumAge: 0
-        };
- 
-        $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
-            var lat  = position.coords.latitude;
-            var long = position.coords.longitude;
-             
-            var myLatlng = new google.maps.LatLng(lat, long);
-             
-            var mapOptions = {
-                center: myLatlng,
-                zoom: 16,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };          
-             
-            var map = new google.maps.Map(document.getElementById("map"), mapOptions);          
-             
-            $scope.map = map;   
-            $ionicLoading.hide();           
-             
-        }, function(err) {
-            $ionicLoading.hide();
-            console.log(err);
-        });
-    })               
+        function initMap() {
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 5,
+    center: {lat: 24.886, lng: -70.268},
+  });
+
+  // Define the LatLng coordinates for the polygon's  outer path.
+  var outerCoords = [
+    {lat: 25.774, lng: -80.190},
+    {lat: 18.466, lng: -66.118},
+    {lat: 32.321, lng: -64.757}
+  ];
+
+  // Define the LatLng coordinates for the polygon's inner path.
+  // Note that the points forming the inner path are wound in the
+  // opposite direction to those in the outer path, to form the hole.
+  var innerCoords = [
+    {lat: 28.745, lng: -70.579},
+    {lat: 29.570, lng: -67.514},
+    {lat: 27.339, lng: -66.668}
+  ];
+
+  // Construct the polygon, including both paths.
+  var bermudaTriangle = new google.maps.Polygon({
+    paths: [outerCoords, innerCoords],
+    strokeColor: '#FFC107',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: '#FFC107',
+    fillOpacity: 0.35
+  });
+  bermudaTriangle.setMap(map);
+}
+
 
   });
